@@ -27,6 +27,24 @@ docker build -t vite-adminlte .
 docker run -p 8080:80 vite-adminlte
 ```
 
+Deployment (Vercel)
+- Connect the GitHub repository to a Vercel Project
+- Framework preset: Vite/React
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- A `vercel.json` is provided with SPA rewrites so client-side routing works in production
+
+Vercel environment variables
+- Production
+  - `VITE_API_BASE_URL` = `https://<render-backend-domain>`
+  - `VITE_WS_URL`      = `wss://<render-backend-domain>`
+- Preview (for PRs)
+  - `VITE_API_BASE_URL` = `https://<render-preview-backend-domain>`
+  - `VITE_WS_URL`      = `wss://<render-preview-backend-domain>`
+
 Notes
-- AdminLTE is included via CDN in `index.html` for styling only.
-- The WebSocket client lives at `src/shared/ws/ReconnectingWebSocket.ts` and is not auto-connected by default.
+- Router uses `<BrowserRouter basename={import.meta.env.BASE_URL}>` so base URL is correct in all environments
+- WebSocket client reads `VITE_WS_URL` via `src/shared/config.ts` and is consumed by `src/shared/ws/ReconnectingWebSocket.ts`
+- AdminLTE is included via CDN in `index.html` for styling only
+- Vercel Analytics is disabled by default via `vercel.json`; enable it in Vercel if needed
+- Pushing to `main` triggers a new deployment in Vercel once the project is connected
